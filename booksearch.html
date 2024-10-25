@@ -1,154 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Search</title>
     <!-- Add Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
     <style>
-        .search-bar {
-            position: absolute;
-            width: 37.5vw;
-            height: 7vh;
-            left: 50vw;
-            transform: translateX(-50%); /* Center horizontally */
-            top: calc(5vh + 6vh + 10px); /* Position below the navbar, with 10px margin */
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 1;
-            body, html {
-                margin: 0;
-                padding: 0;
-                font-family: 'Arial', sans-serif;
-            }
+      .search-bar {
+        position: relative;
+        width: 37.5vw;
+        height: 7vh;
+        left: 50vw;
+        transform: translateX(-50%); /* Center horizontally */
+        top: calc(
+          5vh + 6vh - 3vh
+        ); /* Position below the navbar, with 10px margin */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 1;
+        }
+      body,
+      html {
+          margin: 0;
+          padding: 0;
+          font-family: "Arial", sans-serif;
+          background: rgba(196, 220, 221, 0.92);
+        }
 
-            #book-list {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                padding: 20px;
-            }
+        #book-list {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 20px;
+        }
 
-            .book-box {
-                width: 80%;
-                border: 1px solid #ddd;
-                border-radius: 10px;
-                padding: 20px;
-                margin-bottom: 20px;
-                background-color: #f9f9f9;
-            }
+        .book-box {
+          width: 80%; /* Set the width of the rectangle */
+          margin: 20px auto; /* Center the rectangle and add space between each book */
+          padding: 20px; /* Add padding inside the rectangle */
+          background-color: #f9f9f9; /* Set a light background color */
+          border: 1px solid #ddd; /* Add a subtle border */
+          border-radius: 10px; /* Rounded corners */
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a soft shadow to elevate the box */
+          z-index: 2; /* Ensure it's on top of lower layers */
+          position: relative; /* Set position relative to allow z-index */
+        }
 
-            .book-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                font-size: 1.5rem;
-                font-weight: bold;
-            }
+        .book-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 1.5rem;
+          font-weight: bold;
+        }
 
-            .book-details {
-                margin-top: 10px;
-                font-size: 1rem;
-            }
+        .book-details {
+          margin-top: 10px;
+          font-size: 1rem;
+        }
 
-            .author, .link, .description {
-                margin: 5px 0;
-            }
+        .author,
+        .link,
+        .description {
+          margin: 5px 0;
+        }
 
-            .description {
-                white-space: pre-wrap;
-            }
-
+        .description {
+          white-space: pre-wrap;
+        }
+        .books-container {
+          position: relative; /* Ensure the container allows z-indexing */
+          z-index: 1; /* Give it a default z-index to manage stacking */
+          margin-top: 10vh; /* Add margin from the top to avoid hiding under other layers */
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .navbar {
+          z-index: 10; /* Higher value to keep it on top */
+          position: relative;
         }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="booksearch">
-        <!-- Background Rectangle -->
-        <div class="background-rect"></div>
+      <!-- Background Rectangle -->
+      <!-- <div class="background-rect"></div> -->
 
-        <!-- Navigation Bar inside Header -->
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                <!-- Logo that links to homepage -->
-                <a class="navbar-brand" href="index.html">
-                    <img src="./Resources/Ebooks logo.png" alt="Logo" style="width: 40%;">
-                </a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+      <!-- Navigation Bar inside Header -->
+      <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <!-- Logo that links to homepage -->
+          <a class="navbar-brand" href="index.html">
+            <img
+              src="./Resources/Ebooks logo.png"
+              alt="Logo"
+              style="width: 40%"
+            />
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link home" href="index.html">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link categories" href="#">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link about" href="#">About</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link blog" href="#">Blog</a>
-                        </li>
-                    </ul>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item">
+                <a class="nav-link home" href="/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link categories" href="/search">Categories</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link about" href="#">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link blog" href="#">Blog</a>
+              </li>
+            </ul>
 
-                    <!-- Sign Up and Sign In Buttons -->
-                    <a href="#" class="btn btn-primary sign-up">Sign Up</a>
-                    <a href="#" class="btn btn-secondary sign-in">Sign In</a>
-                </div>
-            </nav>
-        </header>
+            <!-- Sign Up and Sign In Buttons -->
+            <!-- <a href="#" class="btn btn-primary sign-up">Sign Up</a> -->
+            <a href="/admin" class="btn btn-secondary sign-in">Admin</a>
+          </div>
+        </nav>
+      </header>
 
-        <!-- Search Bar Form -->
-        <form class="search-bar" action="/search" method="GET" style="margin-top: 10px;">
-            <input type="text" placeholder="Search a book here" class="search-input" name="query">
-            <button type="submit" class="search-icon">
-                <!-- The button with search icon -->
-                <div class="search-symbol">
-                    <img src="./Resources/Search icon.png" alt="Search" style="width: 100%;">
-                </div>
-            </button>
-        </form>
-        <div class="books-container" id="books-container">
-            <!-- Book data will be inserted here -->
-        </div>
+      <!-- Search Bar Form -->
+      <form
+        class="search-bar"
+        action="/search"
+        method="GET"
+        style="margin-top: 10px"
+      >
+        <input
+          type="text"
+          placeholder="Search a book here"
+          class="search-input"
+          name="query"
+        />
+        <button type="submit" class="search-icon">
+          <!-- The button with search icon -->
+          <div class="search-symbol">
+            <img
+              src="./Resources/Search icon.png"
+              alt="Search"
+              style="width: 100%"
+            />
+          </div>
+        </button>
+      </form>
+      <div class="books-container" id="books-container">
+        <!-- Book data will be inserted here -->
+      <!-- </div> -->
     </div>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-        fetch('/api/books') // Fetch data from the API
-            .then(response => response.json())
-            .then(books => {
-                const bookList = document.getElementById('book-list');
-                books.forEach((book, index) => {
-                    // Create a new div for each book
-                    const bookDiv = document.createElement('div');
-                    bookDiv.classList.add('book-box');
+      document.addEventListener("DOMContentLoaded", function () {
+        // Fetch data from the backend API
+        fetch("/api/books") // This route returns book data in JSON format
+          .then((response) => response.json())
+          .then((books) => {
+            const booksContainer = document.getElementById("books-container");
 
-                    // Set inner HTML for each book
-                    bookDiv.innerHTML = `
-                        <div class="book-header">
-                            <span class="serial-number">${index + 1}</span>
-                            <span class="title">${book.title}</span>
-                        </div>
-                        <div class="book-details">
-                            <p class="author"><strong>Author:</strong> ${book.author}</p>
-                            <p class="link"><strong>Link:</strong> <a href="${book.link}" target="_blank">More Info</a></p>
-                            <p class="description"><strong>Description:</strong> ${book.description}</p>
-                        </div>
-                    `;
+            books.forEach((book, index) => {
+              // Create a new div for each book
+              const bookDiv = document.createElement("div");
+              bookDiv.classList.add("book-box");
 
-                    // Append the book div to the container
-                    bookList.appendChild(bookDiv);
-                });
-            })
-            .catch(error => console.error('Error fetching book data:', error));
-        });
+              // Set the inner HTML for each book
+              bookDiv.innerHTML = `
+                    <div class="book-header">
+                        <span class="serial-number">${index + 1}</span>
+                        <span class="title">${book.title}</span>
+                    </div>
+                    <div class="book-details">
+                        <p class="author"><strong>Author:</strong> ${
+                          book.author
+                        }</p>
+                        <p class="link"><strong>Link:</strong> <a href="${
+                          book.link
+                        }" target="_blank">More Info</a></p>
+                        <p class="description"><strong>Description:</strong> ${
+                          book.description
+                        }</p>
+                    </div>
+                `;
 
+              // Append the book div to the books container
+              booksContainer.appendChild(bookDiv);
+            });
+          })
+          .catch((error) => console.error("Error fetching book data:", error));
+      });
     </script>
-</body>
+  </body>
 </html>

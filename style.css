@@ -15,7 +15,14 @@ body, html {
     height: 100vh;
     background: url("./Resources/Oyster_book_river\ 3.png");
 }
-
+/* .booksearch {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    width: 100vw;
+    height: 100%;
+} */
 .background-rect {
     position: absolute;
     width: 100vw;
@@ -95,6 +102,7 @@ header {
     height: 7vh;
     background: rgba(116, 219, 225, 0.85);
     border: 0.15vw solid #748889;
+    border-radius: 0.5vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -108,23 +116,11 @@ header {
     height: 7vh;
     background: rgba(57, 180, 187, 0.9);
     border: 0.15vw solid #748889;
+    border-radius: 0.5vw;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
-/* .search-symbol {
-    position:absolute;
-    height: 7vh;
-    width: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    top: 1vh;
-    left: 1vw;
-    cursor: pointer;
-} */
 
 .main-content {
     position: absolute;
