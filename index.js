@@ -3,9 +3,13 @@ const express = require('express');
 const path = require('path')
 const app = express();
 const port = 3000;
-const router = express.Router();
+// const router = express.Router();
+const bodyParser = require('body-parser');
 
-// const Book = require('./models/book'); // Assuming the model is in 'models/book.js'
+// Middleware to parse JSON and form data
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 app.use(express.static(path.join(__dirname, './')));
 
 //connect to mongodb
@@ -27,17 +31,6 @@ const bookSchema = new mongoose.Schema({
 })
 var mybooks = db.model('bookmodel', bookSchema);
 
-// Route to fetch books data as JSON
-app.get('/api/books', async (req, res) => {
-    try {
-        const books = await mybooks.find({});  // Fetch all books from the database
-        res.json(books);  // Return the books data as JSON
-        console.log(books);
-    } catch (err) {
-        res.status(500).send('Error fetching data');
-    }
-});
-// module.exports = router;
 
 // Serve static files for home page and admin page
 app.get('/', (req, res) => {
@@ -50,16 +43,12 @@ app.get('/admin', (req, res) => {
 
 //////////////////            Search Book        ////////////////////////
 app.get('/search', async (req, res) => {
-  const searchQuery = req.query.query;
-  console.log(searchQuery);
-  try {
-        const results = await findDocuments(searchQuery);
-        console.log(results); // Log the search results
+    try {
         res.sendFile(path.join(__dirname, './booksearch.html'));
-  } catch (error) {
+    } catch (error) {
         console.error('Error searching documents:', error);
         res.status(500).send('An error occurred while searching');
-  }
+    }
 });
 
 async function findDocuments(searchQuery) {
@@ -68,14 +57,29 @@ async function findDocuments(searchQuery) {
         $or: [
             { title: { $regex: searchQuery, $options: 'i' } },
             { author: { $regex: searchQuery, $options: 'i' } },
-            { publication: { $regex: searchQuery, $options: 'i' } }
+            { publication: { $regex: searchQuery, $options: 'i' } },
+            { description: { $regex: searchQuery, $options: 'i' } }
         ]
     };
     // Execute the query
     const documents = await mybooks.find(query).exec();
     console.log(documents);
+    return documents;
 }
-findDocuments().catch(console.error);
+
+// Route to fetch books data as JSON with search capability
+app.get('/api/books', async (req, res) => {
+    const searchQuery = req.query.query;  // Capture the search query from the fetch request
+    console.log("Search query received:", searchQuery);
+    try {
+        const books = await findDocuments(searchQuery);  // Pass the search query to findDocuments
+        res.json(books);  // Return books data as JSON
+    } catch (err) {
+        console.error('Error fetching data:', err);
+        res.status(500).send('Error fetching data');
+    }
+});
+
 //////////////////            Search Book End        ////////////////////////
 
 //////////////////            Add Book        ////////////////////////
@@ -91,10 +95,10 @@ app.post('/addbook', async (req, res) => {
             link: req.body.link,
             description: req.body.description
         });
-
+        
         // Save the new book to the database
         await newBook.save();
-
+        
         console.log('Book added successfully');
         res.send('<script>alert("Book added successfully");window.open("/", "_self");</script>');
         // res.redirect('/');  // Redirect to home or any other page
@@ -103,7 +107,6 @@ app.post('/addbook', async (req, res) => {
         res.status(500).send('Error adding book');
     }
 });
-// module.exports = mybooks;
 ////////////////          Add Book End        ////////////////////////  
 
 

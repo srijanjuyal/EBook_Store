@@ -66,6 +66,7 @@
         }
 
         .author,
+        .publication,
         .link,
         .description {
           margin: 5px 0;
@@ -169,42 +170,43 @@
     </div>
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        // Fetch data from the backend API
-        fetch("/api/books") // This route returns book data in JSON format
-          .then((response) => response.json())
-          .then((books) => {
-            const booksContainer = document.getElementById("books-container");
+    const searchForm = document.querySelector(".search-bar");
 
-            books.forEach((book, index) => {
-              // Create a new div for each book
-              const bookDiv = document.createElement("div");
-              bookDiv.classList.add("book-box");
-
-              // Set the inner HTML for each book
-              bookDiv.innerHTML = `
-                    <div class="book-header">
-                        <span class="serial-number">${index + 1}</span>
-                        <span class="title">${book.title}</span>
-                    </div>
-                    <div class="book-details">
-                        <p class="author"><strong>Author:</strong> ${
-                          book.author
-                        }</p>
-                        <p class="link"><strong>Link:</strong> <a href="${
-                          book.link
-                        }" target="_blank">More Info</a></p>
-                        <p class="description"><strong>Description:</strong> ${
-                          book.description
-                        }</p>
-                    </div>
-                `;
-
-              // Append the book div to the books container
-              booksContainer.appendChild(bookDiv);
-            });
-          })
-          .catch((error) => console.error("Error fetching book data:", error));
-      });
+    searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();  // Prevent the form from reloading the page
+        
+        const searchInput = document.querySelector(".search-input").value;  // Get the search input value
+        
+        // Fetch data from the backend API with the search query
+        fetch(`/api/books?query=${encodeURIComponent(searchInput)}`)  // Pass the search query in the URL
+            .then((response) => response.json())
+            .then((books) => {
+                const booksContainer = document.getElementById("books-container");
+                booksContainer.innerHTML = ''; // Clear previous results
+                
+                books.forEach((book, index) => {
+                    const bookDiv = document.createElement("div");
+                    bookDiv.classList.add("book-box");
+                    
+                    bookDiv.innerHTML = `
+                        <div class="book-header">
+                            <span class="serial-number">${index + 1}</span>
+                            <span class="title">${book.title}</span>
+                        </div>
+                        <div class="book-details">
+                            <p class="author"><strong>Author:</strong> ${book.author}</p>
+                            <p class="publication"><strong>Publication:</strong> ${book.publication}</p>
+                            <p class="link"><strong>Link:</strong> <a href="${book.link}" target="_blank">More Info</a></p>
+                            <p class="description"><strong>Description:</strong> ${book.description}</p>
+                        </div>
+                    `;
+                    
+                    booksContainer.appendChild(bookDiv);
+                });
+            })
+            .catch((error) => console.error("Error fetching book data:", error));
+    });
+});
     </script>
   </body>
 </html>
